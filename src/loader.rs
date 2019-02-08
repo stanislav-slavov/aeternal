@@ -25,6 +25,8 @@ pub struct BlockLoader {
     pub tx: std::sync::mpsc::Sender<i64>,
 }
 
+use aeternity_sync::aenode;
+
 pub static BACKLOG_CLEARED: i64 = -1;
 
 lazy_static! {

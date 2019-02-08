@@ -2,6 +2,7 @@
 #![feature(custom_attribute)]
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(try_trait)]
+extern crate aeternity_sync;
 extern crate base58;
 extern crate base58check;
 extern crate bigdecimal;
@@ -16,10 +17,12 @@ extern crate diesel;
 extern crate dotenv;
 extern crate env_logger;
 extern crate hex;
+extern crate itertools;
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
+extern crate postgres;
 extern crate rand;
 extern crate r2d2;
 extern crate r2d2_diesel;
@@ -36,10 +39,7 @@ extern crate serde_derive;
 extern crate serde_json;
 
 use std::thread;
-extern crate itertools;
 
-extern crate futures;
-extern crate postgres;
 
 extern crate clap;
 use clap::{App, Arg};
