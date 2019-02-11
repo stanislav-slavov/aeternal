@@ -3,6 +3,7 @@ use diesel::sql_query;
 use epoch::Epoch;
 use models::*;
 
+use chrono::prelude::*;
 use diesel::RunQueryDsl;
 use rocket;
 use rocket::http::Method;
@@ -245,6 +246,24 @@ fn micro_block_header_at_hash(
 }
 
 /*
+ * Gets the amount spent, and number of transactions between specific dates,
+ * broken up by day.
+ *
+ */
+#[get("/transactions/rate/<from>/<to>")]
+fn transaction_rate(
+    _state: State<MiddlewareServer>,
+    from: String,
+    to: String,
+) -> Json<JsonValue>
+{
+    let from = NaiveDate::parse_from_str(&from, "%Y%m%d").unwrap();
+    let to = NaiveDate::parse_from_str(&to, "%Y%m%d").unwrap();
+    debug!("{:?} - {:?}", from, to);
+    Json(json!(Transaction::rate(&SQLCONNECTION.get().unwrap(), from, to).unwrap()))
+}
+
+/*
  * Gets count of transactions for an account
  */
 #[get("/transactions/account/<account>/count")]
@@ -405,6 +424,7 @@ impl MiddlewareServer {
         };
 
         rocket::ignite()
+            .mount("/middleware", routes![transaction_rate])
             .mount("/middleware", routes![transactions_for_account])
             .mount("/middleware", routes![transactions_for_interval])
             .mount("/middleware", routes![transaction_count_for_account])
