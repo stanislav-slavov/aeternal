@@ -264,6 +264,35 @@ fn transaction_rate(
 }
 
 /*
+ * Gets this size of the chain at some height
+ */
+#[get("/size/height/<height>")]
+fn size(
+    _state: State<MiddlewareServer>,
+    height: i32,
+) -> Json<JsonValue>
+{
+    let size = size_at_height(&SQLCONNECTION.get().unwrap(), height).unwrap();
+    Json(json!({
+        "size": size,
+    }))
+
+}
+
+/*
+ * return the current size of the DB
+ */
+#[get("/size/current")]
+fn current_size(
+    _state: State<MiddlewareServer>,
+) -> Json<JsonValue>
+{
+    let _height = KeyBlock::top_height(&PGCONNECTION.get().unwrap()).unwrap();
+    size(_state, _height as i32)
+}
+
+
+/*
  * Gets count of transactions for an account
  */
 #[get("/transactions/account/<account>/count")]
@@ -410,8 +439,6 @@ fn transactions_for_contract_address(
 
 }
 
-
-
 impl MiddlewareServer {
     pub fn start(self) {
         let allowed_origins = AllowedOrigins::all();
@@ -424,6 +451,8 @@ impl MiddlewareServer {
         };
 
         rocket::ignite()
+            .mount("/middleware", routes![current_size])
+            .mount("/middleware", routes![size])
             .mount("/middleware", routes![transaction_rate])
             .mount("/middleware", routes![transactions_for_account])
             .mount("/middleware", routes![transactions_for_interval])
