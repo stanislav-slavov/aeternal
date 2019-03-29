@@ -134,7 +134,7 @@ fn min_b(val: i64) -> Vec<u8> {
         val = 1;
     }
     let mut wtr = vec![];
-    wtr.write_i64::<BigEndian>(val); // TODO: use this Result.
+    wtr.write_i64::<BigEndian>(val).unwrap(); // TODO: handle this error
     let mut result: Vec<u8> = vec![];
     let mut zeros_gone = false;
     for byte in wtr {

@@ -31,11 +31,11 @@ pub struct BlockLoader {
 pub static BACKLOG_CLEARED: i64 = -1;
 
 lazy_static! {
-    static ref tx_queue: CHashMap<i64, bool> = CHashMap::<i64, bool>::new();
+    static ref TX_QUEUE: CHashMap<i64, bool> = CHashMap::<i64, bool>::new();
 }
 
 fn is_in_queue(_height: i64) -> bool {
-    match tx_queue.get(&_height) {
+    match TX_QUEUE.get(&_height) {
         None => false,
         _ => true,
     }
@@ -43,19 +43,19 @@ fn is_in_queue(_height: i64) -> bool {
 
 fn remove_from_queue(_height: i64) {
     info!("tx_queue -> {}", _height);
-    tx_queue.remove(&_height);
-    info!("tx_queue len={}", tx_queue.len());
+    TX_QUEUE.remove(&_height);
+    info!("tx_queue len={}", TX_QUEUE.len());
 }
 fn add_to_queue(_height: i64) {
     info!("tx_queue <- {}", _height);
-    tx_queue.insert(_height, true);
+    TX_QUEUE.insert(_height, true);
 }
 
 pub fn queue(
     _height: i64,
     _tx: &std::sync::mpsc::Sender<i64>,
 ) -> Result<(), std::sync::mpsc::SendError<i64>> {
-    info!("tx_queue len={}", tx_queue.len());
+    info!("tx_queue len={}", TX_QUEUE.len());
 
     if is_in_queue(_height) {
         info!("tx_queue already has {}", _height);
@@ -199,7 +199,6 @@ impl BlockLoader {
                 }
             }
         }
-        Ok(fork_detected)
     }
 
     /*
@@ -351,12 +350,12 @@ impl BlockLoader {
         let ib: InsertableKeyBlock =
             InsertableKeyBlock::from_json_key_block(&generation.key_block)?;
         let key_block_id = ib.save(&connection)? as i32;
-        websocket::broadcast_ws(WsPayload::key_blocks, &json!(&generation.key_block))?; //broadcast key_block
+        websocket::broadcast_ws(WsPayload::KeyBlocks, &json!(&generation.key_block))?; //broadcast key_block
         for mb_hash in &generation.micro_blocks {
             let mut mb: InsertableMicroBlock =
                 serde_json::from_value(self.node.get_micro_block_by_hash(&mb_hash)?)?;
             mb.key_block_id = Some(key_block_id);
-            websocket::broadcast_ws(WsPayload::micro_blocks, &json!(&mb))?; //broadcast micro_block
+            websocket::broadcast_ws(WsPayload::MicroBlocks, &json!(&mb))?; //broadcast micro_block
             let _micro_block_id = mb.save(&connection)? as i32;
             let trans: JsonTransactionList =
                 serde_json::from_value(self.node.get_transaction_list_by_micro_block(&mb_hash)?)?;
@@ -404,8 +403,10 @@ impl BlockLoader {
         match results.pop() {
             Some(x) => {
                 debug!("Updating transaction with hash {}", &trans.hash);
-                diesel::update(&x).set(micro_block_id.eq(_micro_block_id));
-                websocket::broadcast_ws(WsPayload::tx_update, &json!(&x))?; //broadcast updated transaction
+                diesel::update(&x)
+                    .set(micro_block_id.eq(_micro_block_id))
+                    .execute(conn)?;
+                websocket::broadcast_ws(WsPayload::TxUpdate, &json!(&x))?; //broadcast updated transaction
                 Ok(x.id)
             }
             None => {
@@ -416,7 +417,7 @@ impl BlockLoader {
                     _tx_type,
                     _micro_block_id,
                 )?;
-                websocket::broadcast_ws(WsPayload::transactions, &json!(&trans))?; //broadcast updated transaction
+                websocket::broadcast_ws(WsPayload::Transactions, &json!(&trans))?; //broadcast updated transaction
                 _tx.save(conn)
             }
         }

@@ -100,25 +100,28 @@ impl Handler for Client {
         };
         debug!("Value is {:?}", value);
         match value.op {
-            Some(WsOp::subscribe) => {
+            Some(WsOp::Subscribe) => {
                 debug!("Subscription with payload {:?}", value.payload);
                 match value.payload {
-                    Some(WsPayload::key_blocks) => {
-                        rules.insert(WsPayload::key_blocks, true);
+                    Some(WsPayload::KeyBlocks) => {
+                        rules.insert(WsPayload::KeyBlocks, true);
                     }
-                    Some(WsPayload::micro_blocks) => {
-                        rules.insert(WsPayload::micro_blocks, true);
+                    Some(WsPayload::MicroBlocks) => {
+                        rules.insert(WsPayload::MicroBlocks, true);
                     }
-                    Some(WsPayload::transactions) => {
-                        rules.insert(WsPayload::transactions, true);
+                    Some(WsPayload::Transactions) => {
+                        rules.insert(WsPayload::Transactions, true);
                     }
-                    Some(WsPayload::tx_update) => {
-                        rules.insert(WsPayload::tx_update, true);
+                    Some(WsPayload::TxUpdate) => {
+                        rules.insert(WsPayload::TxUpdate, true);
+                    }
+                    Some(WsPayload::Object { identifier }) => {
+                        rules.insert(WsPayload::Object { identifier }, true);
                     }
                     _ => {}
                 }
             }
-            Some(WsOp::unsubscribe) => {
+            Some(WsOp::Unsubscribe) => {
                 if let Some(x) = value.payload {
                     rules.remove(&x);
                 }
@@ -152,7 +155,7 @@ pub fn unpack_message(msg: Message) -> MiddlewareResult<WsMessage> {
 }
 
 pub fn start_ws() {
-    let server = thread::spawn(move || {
+    let _server = thread::spawn(move || {
         let ws_address = env::var("WEBSOCKET_ADDRESS").unwrap_or("0.0.0.0:3020".to_string());
         listen(ws_address, |out| Client { out }).expect("Unable to start the websocket server");
     });

@@ -9,7 +9,6 @@ use diesel::RunQueryDsl;
 use regex::Regex;
 use rocket;
 use rocket::http::{Method, Status};
-use rocket::response::status::Custom;
 use rocket::State;
 use rocket_contrib::json::*;
 use rocket_cors;
@@ -58,7 +57,7 @@ fn node_get_handler(
         .get_naked(&String::from("/v2/"), &String::from(path.to_str().unwrap()))
     {
         Ok(x) => Ok(Json(x)),
-        Err(e) => Err(Status::new(500, "JSON parse error")),
+        Err(_e) => Err(Status::new(500, "JSON parse error")),
     }
 }
 
@@ -82,7 +81,7 @@ fn node_post_handler(
     debug!("Response: {}", response);
     match serde_json::from_str(response.as_str()) {
         Ok(x) => Ok(Json(x)),
-        Err(e) => Err(Status::new(500, "JSON parse error")),
+        Err(_e) => Err(Status::new(500, "JSON parse error")),
     }
 }
 
@@ -96,7 +95,7 @@ fn node_api_handler(state: State<MiddlewareServer>) -> Result<Json<serde_json::V
         .get_naked(&String::from("/api"), &String::from(""))
     {
         Ok(x) => Ok(Json(x)),
-        Err(x) => Err(Status::new(500, "JSON parse error")),
+        Err(_e) => Err(Status::new(500, "JSON parse error")),
     }
 }
 

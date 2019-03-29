@@ -21,8 +21,6 @@ extern crate hex;
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
-extern crate r2d2;
-extern crate r2d2_diesel;
 extern crate r2d2_postgres;
 extern crate rand;
 extern crate regex;
@@ -64,10 +62,11 @@ use middleware_result::MiddlewareResult;
 use server::MiddlewareServer;
 pub mod models;
 
+use diesel::r2d2;
+use diesel::r2d2::ConnectionManager;
 use diesel::PgConnection;
 use dotenv::dotenv;
 use r2d2::Pool;
-use r2d2_diesel::ConnectionManager;
 use r2d2_postgres::PostgresConnectionManager;
 use std::sync::Arc;
 

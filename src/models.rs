@@ -566,16 +566,17 @@ pub fn size_at_height(
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum WsOp {
-    subscribe,
-    unsubscribe,
+    Subscribe,
+    Unsubscribe,
 }
 
 #[derive(Serialize, Deserialize, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum WsPayload {
-    key_blocks,
-    micro_blocks,
-    transactions,
-    tx_update,
+    KeyBlocks,
+    MicroBlocks,
+    Transactions,
+    TxUpdate,
+    Object { identifier: String },
 }
 
 impl fmt::Display for WsPayload {
