@@ -19,7 +19,7 @@ export const state = () => ({
     'OracleRegisterTx',
     'OracleExtendTx',
     'OracleQueryTx',
-    'OracleResponseTx',
+    'OracleRespondTx',
     'NamePreclaimTx',
     'NameClaimTx',
     'NameUpdateTx',
