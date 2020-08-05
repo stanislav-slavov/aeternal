@@ -2,7 +2,7 @@
   <div class="oracle">
     <div class="container-first">
       <div class="container-first-inner">
-        <nuxt-link :to="`/oracles/queries/${data.oracle_id}`">
+        <nuxt-link :to="`/oracles/queries/${data.tx.oracle_id}`">
           <LabelType
             title="Oracle"
             fill="green"
@@ -11,7 +11,7 @@
       </div>
       <div class="containter-first-inner">
         <Account
-          :value="data.oracle_id"
+          :value="data.tx.oracle_id"
           title="Oracle Id"
           icon
         />
@@ -27,12 +27,16 @@
             {{ data.block_height }}
           </nuxt-link>
         </AppDefinition>
-        <AppDefinition
-          class="container-last-inner"
-          title="Expires At"
-        >
-          {{ data.expires_at }}
-        </AppDefinition>
+        <!--
+          TODO: Add "expires_at" property
+                when it is available
+          <AppDefinition
+            class="container-last-inner"
+            title="Expires At"
+          >
+            {{ data.expires_at }}
+          </AppDefinition>
+        -->
       </div>
       <div class="container-last-wrapper">
         <AppDefinition
@@ -40,22 +44,26 @@
           title="Query Fee"
         >
           <FormatAeUnit
-            :value="data.tx.query_fee"
+            :value="data.tx.fee"
           />
         </AppDefinition>
-        <AppDefinition
-          class="container-last-inner"
-          title="Query Format"
-        >
-          {{ data.tx.query_format }}
-        </AppDefinition>
+        <!--  Add "query_format", "response_format"
+              properties when they are available
+          TODO:
+          <AppDefinition
+            class="container-last-inner"
+            title="Query Format"
+          >
+            {{ data.tx.query_format }}
+          </AppDefinition>
 
-        <AppDefinition
-          class="container-last-inner"
-          title="Response Format"
-        >
-          {{ data.tx.response_format }}
-        </AppDefinition>
+          <AppDefinition
+            class="container-last-inner"
+            title="Response Format"
+          >
+            {{ data.tx.response_format }}
+          </AppDefinition>
+        -->
       </div>
     </div>
   </div>
