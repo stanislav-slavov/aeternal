@@ -7,7 +7,7 @@
       :subpage="{to: `/channels/transactions/${$route.params.id}`, name: 'Channel Transactions'}"
     />
     <div
-      v-if="!loading && transactions.length > 0"
+      v-if="!loading && transactions && transactions.length > 0"
     >
       <TxList>
         <TXListItem
@@ -20,7 +20,7 @@
     <div v-if="loading">
       Loading....
     </div>
-    <div v-if="!loading && transactions.length == 0">
+    <div v-if="!loading && transactions && transactions.length == 0">
       Channel not found.
       Please check the channel address and try again.
     </div>

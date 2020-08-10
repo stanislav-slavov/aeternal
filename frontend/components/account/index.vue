@@ -10,6 +10,7 @@
       <div class="account-content">
         <FormatAddress
           :value="value"
+          :id="id"
           :icon="icon"
           :length="length"
         />
@@ -29,6 +30,9 @@ export default {
     value: {
       type: String,
       required: true
+    },
+    id: {
+      type: Number
     },
     title: {
       type: String,

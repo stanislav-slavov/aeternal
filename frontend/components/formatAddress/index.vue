@@ -112,6 +112,9 @@ export default {
       type: String,
       required: true
     },
+    id: {
+      type: Number
+    },
     length: {
       type: String,
       default: 'full'
@@ -134,7 +137,7 @@ export default {
     },
     link () {
       if (this.value.match(/^th_[1-9A-HJ-NP-Za-km-z]{48,50}$/)) {
-        return `/transactions/${this.value}`
+        return `/transactions/${this.id}`
       }
       if (this.value.match(/^ok_[1-9A-HJ-NP-Za-km-z]{48,50}$/)) {
         return `/oracles/queries/${this.value}`

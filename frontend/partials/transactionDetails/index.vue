@@ -16,6 +16,7 @@
               >
                 <FormatAddress
                   :value="data.hash"
+                  :id="data.tx_index"
                   length="full"
                   icon
                 />
