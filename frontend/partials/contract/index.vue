@@ -34,6 +34,7 @@
       <Account
         v-if="data.hash"
         :value="data.hash"
+        :id="data.tx_index"
         title="Transaction Hash"
         icon
       />

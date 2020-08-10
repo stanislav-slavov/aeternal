@@ -35,7 +35,8 @@ export const transformMetaTx = (txDetails) => {
     fee: txDetails.tx.fee,
     abi_version: txDetails.tx.abi_version,
     auth_data: txDetails.tx.auth_data,
-    tx: txDetails.tx.tx.tx
+    tx: txDetails.tx.tx.tx,
+    tx_index: txDetails.tx_index
   }
 }
 
